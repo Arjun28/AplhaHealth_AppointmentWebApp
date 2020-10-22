@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Register</title>
+</head>
+<body>
+    
+    <h2 id = 'status'></h2>
+
+    <br>
+
+    <h3>Create an account...</h3>
+    
+
+    First Name : <input type = 'text' id = 'new_fname'><br>
+    Last Name : <input type = 'text' id = 'new_lname'><br>
+    Age : <input type = 'text' id = 'new_age'><br>
+    UserName : <input type = 'text' id = 'new_usrname'><br>
+    Password : <input type = 'password' id = 'new_pswd'><br>
+    <br>
+    <button id = 'registerPatient'>Create Account</button>
+
+    <br><br>
+
+    <a href = "{% url 'AlphaHealthApp:PatientLogin'%}">Login page</a>
+
+
+
+
+<script>
+
+    $('#registerPatient').click(function(){ 
+        $.ajax({
+            url: '/CreatePatient/',
+            method:  "POST",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                userName : $('#new_usrname').val(),
+                userPswd : $('#new_pswd').val(),
+                newFName : $('#new_fname').val(),
+                newLName : $('#new_lname').val(),
+                newAge : $('#new_age').val(),
+            },
+            success: function(resultResponse){
+                $('#status').text("Account Created successfully");
+            }    
+        });
+    });
+
+</script>
+
+</body>
+</html>

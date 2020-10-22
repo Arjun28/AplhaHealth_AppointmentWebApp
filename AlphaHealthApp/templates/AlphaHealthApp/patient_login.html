@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Patient Login</title>
+</head>
+<body>
+
+    <h1>Please enter you credentials or create an account</h1>
+
+    <br/>
+    <br/>
+
+    <h3>LOGIN : </h3>
+    
+
+    <form action="/PatientLoginPage/" method="POST">
+        {% csrf_token %} 
+        <h4>UserID : </h4> <input type="text"  id="PatientUserID" name = "PatientUserID" required>
+        <br/>
+        <h4>Password : </h4> <input type="password"  id="PatientPassword" name = "PatientPassword" required>
+        <br/>
+        <button type = "submit" value="Submit" id = "PatientLoginButton">LOGIN!</button>
+    </form>
+
+
+
+
+    <p><i>If you are a new user, create an account</i></p>
+
+    <form action="/NewPatient" method="get">
+        <button type = "submit" value="Submit">Create Account</button>
+    </form>
+
+    
+
+</body>
+</html>

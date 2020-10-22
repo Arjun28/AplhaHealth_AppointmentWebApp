@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Welcome!</title>
+</head>
+<body>
+
+<h1>Patient's Profile:</h1>
+
+Hi there!!! {{patientID}}. Welcome back.
+
+<a href = "{% url 'AlphaHealthApp:PatientLogin'%}">Logout</a>
+
+<h3 id = "updatePrompt"></h3>
+<h5>Profile Details : </h5>
+UserName : <p id = 'uname'>&nbsp;&nbsp;{{patientID}}</p>
+First Name : <p id = 'fname'>&nbsp;&nbsp;{{firstname}}</p>
+Last Name : <p id = 'lname'>&nbsp;&nbsp;{{lastname}}</p>
+Age : <p id = 'age'>&nbsp;&nbsp;{{age}}</p> <br>
+
+<br/>
+
+
+<h5>Update profile details(<i>This uses jquery AJAX. </i>)</h5>
+
+First Name : <input type = 'text' id = 'new_fname'>
+Last Name : <input type = 'text' id = 'new_lname'>
+Age : <input type = 'text' id = 'new_age'>
+
+<button id = 'updateProfileDetails'>Update!</button>
+
+
+<br>
+<br>
+
+<h3>My all Appointments: </h3>
+<h4 id = 'myAllAppts'></h4>
+
+
+
+<br>
+<br>
+
+
+<h3>Appointment Status: </h3>
+<h5 id = 'apptStatus'></h5>
+<h5 id = 'apptStatusDate'></h5>
+<h5 id = 'apptStatusTime'></h5>
+<h5 id = 'apptStatusReason'></h5>
+
+
+
+<h3>Create Appointments : </h3>
+
+Date : <input type = 'text' id = 'apptDate'>(format:dd-mm-yyyy)<br>
+Time  : <input type = 'text' id = 'apptTime'>(format:hh:mm:ss)<br>
+Appointment Reason : <input type = 'textarea' id = 'apptReason'><br>
+<br>
+<button id = 'createAppt'>Fix Appointment</button>
+
+
+
+
+<script>
+
+$('#updateProfileDetails').click(function(){        
+    $.ajax({
+        url: '/PatientUpdate/',
+        method:  "POST",
+        data: {
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+            userName : $('#uname').html().replace('&nbsp;&nbsp;',''),
+            newFName : $('#new_fname').val(),
+            newLName : $('#new_lname').val(),
+            newAge : $('#new_age').val(),
+        },   
+        success: function(resultResponse){
+            $('#updatePrompt').text("You're details are updated!!!!");
+            $('#fname').text(resultResponse.uFName);
+            $('#lname').text(resultResponse.uLName);
+            $('#age').text(resultResponse.uAge);
+        }          
+    });    
+});
+
+
+
+
+
+$('#createAppt').click(function(){        
+    $.ajax({
+        url: '/CreateAppointment/',
+        method:  "POST",
+        data: {
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+            userName : $('#uname').html().replace('&nbsp;&nbsp;',''),
+            apptDate : $('#apptDate').val(),
+            apptTime : $('#apptTime').val(),
+            apptReason : $('#apptReason').val(),
+        },   
+        success: function(resultResponse){
+            $('#apptStatus').text("Appointment registered!!!!");
+            $('#apptStatusDate').text("Date : " +resultResponse.ApptDate);
+            $('#apptStatusTime').text("Time : " +resultResponse.ApptTime);
+            $('#apptStatusReason').text("Reason : " +resultResponse.ApptReason);
+        }          
+    });    
+});
+
+
+
+
+
+$.ajax({
+    url: '/ViewAppointment/',
+    method: 'POST',
+    data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        usrName : $('#uname').html().replace('&nbsp;&nbsp;',''),
+    },
+    success : function(resultResponse){
+        console.log(resultResponse)
+        for(let i = 0; i<= resultResponse.userAppts.length; i++)
+        if(resultResponse.userAppts[i] != undefined)  $('#myAllAppts').append("<p>" + resultResponse.userAppts[i] +"</p>");
+    }
+});
+
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Doctor Home</title>
+</head>
+<body>
+    <h1>Doctor's HomePage</h1>
+
+    <h3>All User's Appointments: </h3>
+    <h4 id = 'AllAppts'></h4>
+
+<script>
+    $.ajax({
+        url: '/ViewAllAppointment/',
+        method: 'POST',
+        data: {
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+        },
+        success : function(resultResponse){
+            console.log(resultResponse)
+            for(let i = 0; i<= resultResponse.userAppts.length; i++)
+            if(resultResponse.userAppts[i] != undefined)  $('#AllAppts').append("<p>" + resultResponse.userAppts[i] +"</p>");
+        }
+    });
+</script>
+
+</body>
+</html>
